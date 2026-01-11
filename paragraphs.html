@@ -1,0 +1,298 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>For You 💗</title>
+  <link rel="stylesheet" href="styles.css"/>
+  <style>
+    /* Tiny extras so it looks peng using your existing CSS */
+    .reveal-grid{ display:grid; gap:14px; margin-top:12px; }
+    .reveal-card{
+      background: rgba(255,255,255,.75);
+      border: 1px solid rgba(255,111,177,.25);
+      border-radius: 18px;
+      padding: 14px;
+      box-shadow: 0 10px 18px rgba(0,0,0,.08);
+      position: relative;
+      overflow:hidden;
+    }
+    .reveal-top{ display:flex; align-items:center; justify-content:space-between; gap:10px; }
+    .tag{
+      font-size:12px; font-weight:900;
+      padding:6px 10px; border-radius:999px;
+      background: rgba(255,255,255,.7);
+      border: 1px solid rgba(255,111,177,.25);
+    }
+
+    .lockline{ margin:10px 0 8px; color: rgba(43,27,36,.65); font-weight:700; }
+    .holdBtn{ width:100%; justify-content:center; gap:10px; }
+    .meter{
+      height:12px; border-radius:999px;
+      background: rgba(255,255,255,.7);
+      border: 1px solid rgba(255,111,177,.25);
+      overflow:hidden;
+      margin-top:10px;
+    }
+    .bar{
+      height:100%;
+      width:0%;
+      border-radius:999px;
+      background: linear-gradient(135deg, var(--pink), var(--pink2));
+      transition: width .05s linear;
+    }
+
+    .contentBox{
+      margin-top:12px;
+      padding:14px;
+      border-radius:16px;
+      background: rgba(255,255,255,.85);
+      border: 1px solid rgba(255,111,177,.22);
+      animation: popIn .45s ease both;
+    }
+    .contentBox p{ margin:0; line-height:1.55; font-weight:650; color:#3a2330; }
+
+    @keyframes popIn{
+      from{ opacity:0; transform: translateY(10px) scale(.98); }
+      to{ opacity:1; transform: translateY(0) scale(1); }
+    }
+
+    .sparkle{
+      position:absolute;
+      width:10px; height:10px; border-radius:50%;
+      background: rgba(255,255,255,.95);
+      box-shadow: 0 0 0 6px rgba(255,111,177,.12);
+      pointer-events:none;
+      animation: spark .6s ease-out forwards;
+    }
+    @keyframes spark{
+      from{ transform: translate(0,0) scale(1); opacity:1; }
+      to{ transform: translate(var(--dx), var(--dy)) scale(.2); opacity:0; }
+    }
+  </style>
+</head>
+
+<body>
+  <main class="app">
+    <header class="top">
+      <h1>For You 💗</h1>
+      <p class="sub">Unlock each paragraph by holding the button.</p>
+    </header>
+
+    <section class="panel">
+      <div class="controls">
+        <a class="btn btn-ghost" href="index.html">← Back</a>
+        <button id="resetAll" class="btn btn-ghost" type="button">Reset</button>
+      </div>
+
+      <div class="reveal-grid">
+
+        <!-- 1 -->
+        <article class="reveal-card" data-card="1">
+          <div class="reveal-top">
+            <h2 style="margin:0;font-size:18px;">Paragraph 1</h2>
+            <span class="tag" data-tag>Locked</span>
+          </div>
+
+          <p class="lockline">Hold to reveal…</p>
+
+          <button class="btn btn-primary holdBtn" type="button">
+            <span aria-hidden="true">❤</span>
+            Hold
+          </button>
+
+          <div class="meter" aria-hidden="true"><div class="bar"></div></div>
+
+          <div class="contentBox" hidden>
+            <p>
+              Maria, you make life feel soft. Like everything’s calmer just because you’re in it.
+              The way you laugh, the way you speak, the way you exist — it’s genuinely magic to me.
+            </p>
+          </div>
+        </article>
+
+        <!-- 2 -->
+        <article class="reveal-card" data-card="2">
+          <div class="reveal-top">
+            <h2 style="margin:0;font-size:18px;">Paragraph 2</h2>
+            <span class="tag" data-tag>Locked</span>
+          </div>
+
+          <p class="lockline">Hold to reveal…</p>
+
+          <button class="btn btn-primary holdBtn" type="button">
+            <span aria-hidden="true">❤</span>
+            Hold
+          </button>
+
+          <div class="meter" aria-hidden="true"><div class="bar"></div></div>
+
+          <div class="contentBox" hidden>
+            <p>
+              I’m proud of you, always. Even on the days you feel behind, you’re still showing up and trying —
+              and that’s rare. You’re smart, kind, and you’ve got a heart that’s pure. I feel lucky I get to love you.
+            </p>
+          </div>
+        </article>
+
+        <!-- 3 -->
+        <article class="reveal-card" data-card="3">
+          <div class="reveal-top">
+            <h2 style="margin:0;font-size:18px;">Paragraph 3</h2>
+            <span class="tag" data-tag>Locked</span>
+          </div>
+
+          <p class="lockline">Hold to reveal…</p>
+
+          <button class="btn btn-primary holdBtn" type="button">
+            <span aria-hidden="true">❤</span>
+            Hold
+          </button>
+
+          <div class="meter" aria-hidden="true"><div class="bar"></div></div>
+
+          <div class="contentBox" hidden>
+            <p>
+              No matter what’s going on, I’m on your side. Always.
+              I want a wee life with you — cosy nights, random adventures, and a lot of love.
+              You’re my person. 💗
+            </p>
+
+            <div style="margin-top:12px; display:flex; gap:10px; justify-content:center;">
+              <a class="btn btn-primary" href="https://google.com" target="_blank" rel="noreferrer">Continue →</a>
+            </div>
+          </div>
+        </article>
+
+      </div>
+
+      <p class="tiny" style="margin-top:14px;">
+        Tip: hold the button until it fills. (Works on mouse + touch)
+      </p>
+    </section>
+
+    <footer class="footer">
+      <span>Soft pink vibes only ✨</span>
+    </footer>
+  </main>
+
+  <script>
+    // Hold-to-reveal: no extra JS file needed
+    (function () {
+      const HOLD_MS = 1200; // how long she must hold
+      const cards = Array.from(document.querySelectorAll(".reveal-card"));
+      const resetAll = document.getElementById("resetAll");
+
+      function sparkleBurst(el) {
+        const rect = el.getBoundingClientRect();
+        const centerX = rect.width / 2;
+        const centerY = rect.height / 2;
+
+        for (let i = 0; i < 10; i++) {
+          const s = document.createElement("div");
+          s.className = "sparkle";
+          const dx = (Math.random() * 120 - 60).toFixed(0) + "px";
+          const dy = (Math.random() * 90 - 45).toFixed(0) + "px";
+          s.style.left = centerX + "px";
+          s.style.top = centerY + "px";
+          s.style.setProperty("--dx", dx);
+          s.style.setProperty("--dy", dy);
+          el.appendChild(s);
+          setTimeout(() => s.remove(), 700);
+        }
+      }
+
+      function lockCard(card) {
+        const tag = card.querySelector("[data-tag]");
+        const btn = card.querySelector(".holdBtn");
+        const bar = card.querySelector(".bar");
+        const content = card.querySelector(".contentBox");
+
+        tag.textContent = "Locked";
+        btn.disabled = false;
+        bar.style.width = "0%";
+        content.hidden = true;
+      }
+
+      function unlockCard(card) {
+        const tag = card.querySelector("[data-tag]");
+        const btn = card.querySelector(".holdBtn");
+        const content = card.querySelector(".contentBox");
+
+        tag.textContent = "Unlocked ✓";
+        tag.style.background = "rgba(126,224,166,.22)";
+        tag.style.borderColor = "rgba(126,224,166,.6)";
+        btn.disabled = true;
+        content.hidden = false;
+        sparkleBurst(card);
+      }
+
+      cards.forEach((card) => {
+        const btn = card.querySelector(".holdBtn");
+        const bar = card.querySelector(".bar");
+
+        let raf = null;
+        let start = null;
+        let holding = false;
+
+        function tick(ts) {
+          if (!start) start = ts;
+          const elapsed = ts - start;
+          const pct = Math.min(100, (elapsed / HOLD_MS) * 100);
+          bar.style.width = pct.toFixed(0) + "%";
+
+          if (pct >= 100) {
+            holding = false;
+            cancelAnimationFrame(raf);
+            raf = null;
+            unlockCard(card);
+            return;
+          }
+
+          if (holding) raf = requestAnimationFrame(tick);
+        }
+
+        function startHold() {
+          if (btn.disabled) return;
+          holding = true;
+          start = null;
+          if (!raf) raf = requestAnimationFrame(tick);
+        }
+
+        function endHold() {
+          if (btn.disabled) return;
+          if (!holding) return;
+          holding = false;
+          if (raf) cancelAnimationFrame(raf);
+          raf = null;
+
+          // snap back if not completed
+          bar.style.width = "0%";
+        }
+
+        // mouse + touch + keyboard
+        btn.addEventListener("mousedown", startHold);
+        btn.addEventListener("mouseup", endHold);
+        btn.addEventListener("mouseleave", endHold);
+
+        btn.addEventListener("touchstart", (e) => { e.preventDefault(); startHold(); }, { passive:false });
+        btn.addEventListener("touchend", endHold);
+
+        btn.addEventListener("keydown", (e) => {
+          if (e.code === "Space" || e.code === "Enter") startHold();
+        });
+        btn.addEventListener("keyup", (e) => {
+          if (e.code === "Space" || e.code === "Enter") endHold();
+        });
+      });
+
+      resetAll.addEventListener("click", () => {
+        cards.forEach(lockCard);
+      });
+
+      // Ensure initial locked state
+      cards.forEach(lockCard);
+    })();
+  </script>
+</body>
+</html>
