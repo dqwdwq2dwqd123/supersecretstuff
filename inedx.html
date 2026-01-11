@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Wordle</title>
+  <link rel="stylesheet" href="styles.css"/>
+</head>
+<body>
+  <main class="app">
+    <header class="top">
+      <h1>Wordle</h1>
+      <p class="sub">Guess the 4-letter word 🤍</p>
+    </header>
+
+    <section class="panel">
+      <div class="controls">
+        <button id="hintBtn" class="btn btn-ghost" type="button">Hint</button>
+        <button id="resetBtn" class="btn btn-ghost" type="button">Reset</button>
+      </div>
+
+      <div id="hintBox" class="hint" aria-live="polite" hidden>
+        <span class="hint-label">Hint:</span>
+        <span id="hintText"></span>
+      </div>
+
+      <div id="grid" class="grid" aria-label="Word grid"></div>
+
+      <form id="guessForm" class="guess">
+        <label class="sr-only" for="guessInput">Enter guess</label>
+        <input
+          id="guessInput"
+          class="input"
+          type="text"
+          inputmode="text"
+          autocomplete="off"
+          maxlength="4"
+          placeholder="Type 4 letters…"
+        />
+        <button class="btn btn-primary" type="submit">Guess</button>
+      </form>
+
+      <p id="message" class="message" aria-live="polite"></p>
+
+      <div id="winArea" class="win" hidden>
+        <p class="win-text">You did it DARLINGG MWAH MWAH MWAHH</p>
+        <a id="continueBtn" class="btn btn-primary" href="https://google.com" target="_blank" rel="noreferrer">
+          Continue →
+        </a>
+      </div>
+
+    </section>
+
+    <footer class="footer">
+      <span>Made with 🤍</span>
+    </footer>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
