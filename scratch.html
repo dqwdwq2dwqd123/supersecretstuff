@@ -1,0 +1,330 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Scratch to Reveal 🤍</title>
+  <link rel="stylesheet" href="styles.css"/>
+
+  <style>
+    .scratch-wrap { display:grid; gap:14px; margin-top:10px; }
+
+    .scratch-card{
+      position:relative;
+      border-radius:18px;
+      background: rgba(255,255,255,.80);
+      border: 1px solid rgba(255,111,177,.25);
+      box-shadow: 0 10px 18px rgba(0,0,0,.08);
+      overflow:hidden;
+      padding:16px;
+    }
+
+    .scratch-title{
+      margin:0;
+      font-size:18px;
+      font-weight:900;
+      letter-spacing:.2px;
+    }
+
+    .scratch-sub{
+      margin:6px 0 0;
+      color: rgba(43,27,36,.65);
+      font-weight:700;
+    }
+
+    .scratch-area{
+      margin-top:14px;
+      position:relative;
+      border-radius:18px;
+      overflow:hidden;
+      border: 2px solid rgba(255,111,177,.18);
+      background: linear-gradient(135deg, rgba(255,255,255,.9), rgba(255,255,255,.75));
+      min-height: 220px;
+    }
+
+    .reveal-under{
+      position:absolute;
+      inset:0;
+      display:grid;
+      place-items:center;
+      padding:18px;
+      text-align:center;
+    }
+
+    .gift{
+      font-size:34px;
+      font-weight:1000;
+      letter-spacing:2px;
+      text-transform:uppercase;
+      margin:0;
+      line-height:1.1;
+      background: linear-gradient(135deg, var(--pink), var(--pink2));
+      -webkit-background-clip:text;
+      background-clip:text;
+      color: transparent;
+    }
+
+    .little{
+      margin:10px 0 0;
+      font-weight:800;
+      color: rgba(43,27,36,.65);
+    }
+
+    canvas#scratchCanvas{
+      position:absolute;
+      inset:0;
+      width:100%;
+      height:100%;
+      touch-action: none;
+    }
+
+    .progress-line{
+      margin-top:12px;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:10px;
+      color: rgba(43,27,36,.65);
+      font-weight:800;
+      font-size:12px;
+    }
+
+    .mini-meter{
+      flex:1;
+      height:10px;
+      border-radius:999px;
+      background: rgba(255,255,255,.7);
+      border: 1px solid rgba(255,111,177,.25);
+      overflow:hidden;
+    }
+
+    .mini-bar{
+      height:100%;
+      width:0%;
+      border-radius:999px;
+      background: linear-gradient(135deg, var(--pink), var(--pink2));
+      transition: width .1s ease;
+    }
+
+    .after{
+      margin-top:14px;
+      display:grid;
+      gap:10px;
+      justify-items:center;
+    }
+
+    .hidden { display:none !important; }
+
+    /* just in case */
+    [hidden] { display:none !important; }
+  </style>
+</head>
+
+<body>
+  <main class="app">
+    <header class="top">
+      <h1>Scratch Card 🤍</h1>
+    </header>
+
+    <section class="panel">
+      <div class="controls">
+        <a class="btn btn-ghost" href="paragraphs.html">← Back</a>
+        <button id="resetBtn" class="btn btn-ghost" type="button">Reset</button>
+      </div>
+
+      <div class="scratch-wrap">
+        <div class="scratch-card">
+          <h2 class="scratch-title">Reveal your surprise 🤍</h2>
+          <p class="scratch-sub">Use your finger to scratch the grey layer away.</p>
+
+          <div class="scratch-area" id="scratchArea">
+            <div class="reveal-under">
+              <div>
+                <p class="gift" id="giftText">PINK DFYNE LIFTING STRAPS</p>
+                <p class="little">For my gorgeous girl 🤍</p>
+              </div>
+            </div>
+
+            <canvas id="scratchCanvas" aria-label="Scratch to reveal"></canvas>
+          </div>
+
+          <div class="progress-line">
+            <span id="progressText">0% scratched 🤍</span>
+            <div class="mini-meter"><div class="mini-bar" id="miniBar"></div></div>
+          </div>
+
+          <div class="after hidden" id="afterArea">
+            <p class="message" style="margin:0;"> YOU WON THE LOTTERY DARLINGG🤍🤍🤍</p>
+          </div>
+        </div>
+
+        <p class="tiny">
+          Scratch about half of it and it’ll auto-complete 🤍
+        </p>
+      </div>
+    </section>
+
+    <footer class="footer">
+      <span></span>
+    </footer>
+  </main>
+
+  <script>
+    (function () {
+      const canvas = document.getElementById("scratchCanvas");
+      const area = document.getElementById("scratchArea");
+      const resetBtn = document.getElementById("resetBtn");
+      const progressText = document.getElementById("progressText");
+      const miniBar = document.getElementById("miniBar");
+      const afterArea = document.getElementById("afterArea");
+
+      const ctx = canvas.getContext("2d", { willReadFrequently: true });
+
+      let isDown = false;
+      let cleared = 0;
+      let done = false;
+
+      function resizeCanvas() {
+        const rect = area.getBoundingClientRect();
+        const dpr = window.devicePixelRatio || 1;
+
+        canvas.width = Math.floor(rect.width * dpr);
+        canvas.height = Math.floor(rect.height * dpr);
+        canvas.style.width = rect.width + "px";
+        canvas.style.height = rect.height + "px";
+
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        drawCover();
+        updateProgress(0);
+        done = false;
+        afterArea.classList.add("hidden");
+      }
+
+      function drawCover() {
+        const w = area.clientWidth;
+        const h = area.clientHeight;
+
+        // Grey scratch layer (soft)
+        const grad = ctx.createLinearGradient(0, 0, w, h);
+        grad.addColorStop(0, "rgba(220,220,220,0.98)");
+        grad.addColorStop(1, "rgba(190,190,190,0.98)");
+        ctx.globalCompositeOperation = "source-over";
+        ctx.fillStyle = grad;
+        ctx.fillRect(0, 0, w, h);
+
+        // cute overlay text 🤍
+        ctx.fillStyle = "rgba(120,120,120,0.9)";
+        ctx.font = "800 18px ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial";
+        ctx.textAlign = "center";
+        ctx.fillText("SCRATCH HERE 🤍", w / 2, h / 2 - 6);
+
+        ctx.font = "800 12px ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial";
+        ctx.fillStyle = "rgba(120,120,120,0.75)";
+        ctx.fillText("you better not tap out 🤍", w / 2, h / 2 + 18);
+      }
+
+      function getPos(e) {
+        const rect = canvas.getBoundingClientRect();
+        const clientX = (e.touches && e.touches[0]) ? e.touches[0].clientX : e.clientX;
+        const clientY = (e.touches && e.touches[0]) ? e.touches[0].clientY : e.clientY;
+        return {
+          x: clientX - rect.left,
+          y: clientY - rect.top
+        };
+      }
+
+      function scratchAt(x, y) {
+        const r = 20; // brush radius
+        ctx.globalCompositeOperation = "destination-out";
+        ctx.beginPath();
+        ctx.arc(x, y, r, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.globalCompositeOperation = "source-over";
+      }
+
+      function estimateClearedPercent() {
+        // Sample in a grid for speed
+        const w = area.clientWidth;
+        const h = area.clientHeight;
+        const step = 18; // bigger = faster, less accurate
+
+        const img = ctx.getImageData(0, 0, w, h).data;
+        let total = 0;
+        let transparent = 0;
+
+        for (let y = 0; y < h; y += step) {
+          for (let x = 0; x < w; x += step) {
+            total++;
+            const i = ((y * w) + x) * 4 + 3; // alpha channel
+            if (img[i] < 25) transparent++;
+          }
+        }
+
+        return Math.round((transparent / total) * 100);
+      }
+
+      function updateProgress(pct) {
+        progressText.textContent = pct + "% scratched 🤍";
+        miniBar.style.width = pct + "%";
+      }
+
+      function finish() {
+        if (done) return;
+        done = true;
+
+        // Wipe the rest clean
+        ctx.globalCompositeOperation = "destination-out";
+        ctx.fillRect(0, 0, area.clientWidth, area.clientHeight);
+        ctx.globalCompositeOperation = "source-over";
+
+        updateProgress(100);
+        afterArea.classList.remove("hidden");
+      }
+
+      function onDown(e) {
+        if (done) return;
+        isDown = true;
+        const p = getPos(e);
+        scratchAt(p.x, p.y);
+        e.preventDefault();
+      }
+
+      function onMove(e) {
+        if (!isDown || done) return;
+        const p = getPos(e);
+        scratchAt(p.x, p.y);
+
+        // update progress occasionally
+        const pct = estimateClearedPercent();
+        updateProgress(pct);
+
+        // Auto-complete when ~55% scratched
+        if (pct >= 55) finish();
+
+        e.preventDefault();
+      }
+
+      function onUp() {
+        isDown = false;
+      }
+
+      // Events
+      canvas.addEventListener("mousedown", onDown);
+      canvas.addEventListener("mousemove", onMove);
+      window.addEventListener("mouseup", onUp);
+
+      canvas.addEventListener("touchstart", onDown, { passive: false });
+      canvas.addEventListener("touchmove", onMove, { passive: false });
+      window.addEventListener("touchend", onUp);
+
+      resetBtn.addEventListener("click", () => {
+        resizeCanvas();
+      });
+
+      // Init
+      window.addEventListener("resize", resizeCanvas);
+      resizeCanvas();
+    })();
+  </script>
+</body>
+</html>
